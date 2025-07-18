@@ -3,154 +3,251 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kabab Paradise Ordering</title>
+  <title>Kabab Paradise Full Menu Order</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #FFF3E0, #FFD180);
-      color: #444;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #fff8e1 0%, #ffd180 100%);
+      color: #24333e;
+      min-height: 100vh;
     }
     h1 {
       text-align: center;
-      padding: 1rem;
-      font-size: 2rem;
+      margin-top: 1.2rem;
+      margin-bottom: 0.2rem;
+      font-size: 2.1rem;
+      font-weight: bold;
+      letter-spacing: 1px;
     }
     .categories {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
+      gap: 16px;
+      margin: 1.1rem 8px 1rem 8px;
     }
     .categories button {
       flex: 1 1 40%;
-      min-width: 140px;
-      padding: 1.2rem;
-      font-size: 1.2rem;
+      min-width: 150px;
+      font-size: 1.15rem;
+      padding: 1.25rem 0.4rem;
+      margin: 0;
       font-weight: bold;
       border: none;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #ffa726, #fb8c00);
+      border-radius: 14px;
       color: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: linear-gradient(90deg, #ff9800 0%, #f44336 100%);
+      box-shadow: 0 3px 14px rgba(230,110,30,0.15);
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: background 0.18s, transform 0.18s;
+      position: relative;
     }
-    .categories button:hover {
-      transform: scale(1.05);
+    .categories button.active,
+    .categories button:focus {
+      background: linear-gradient(90deg, #ffd180 0%, #ff7043 100%);
+      color: #9e3800;
+      outline: none;
+      transform: scale(1.04);
     }
     .menu-section {
       display: none;
-      max-width: 500px;
-      margin: 1rem auto;
-      background: white;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      background: #fffbe9;
+      padding: 1rem 0.7rem;
+      margin: 0 auto 18px auto;
+      max-width: 540px;
+      border-radius: 18px;
+      box-shadow: 0 4px 28px rgba(230,110,30,0.14);
+      animation: fadeIn .35s;
+      position: relative;
+    }
+    .menu-section.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px);}
+      to   { opacity: 1; transform: translateY(0);}
+    }
+    .section-title {
+      text-align: center;
+      font-size: 1.33rem;
+      font-weight: 800;
+      color: #ff7300;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    .menu-list {
+      padding: 0;
+      margin: 0;
     }
     .menu-item {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #eee;
+      align-items: flex-start;
       padding: 0.8rem 0;
+      border-bottom: 1px solid #ffe0b2;
+      gap: 8px;
     }
     .menu-item .info {
-      max-width: 75%;
+      max-width: 70%;
     }
-    .menu-item strong {
+    .menu-item .item-title {
+      font-weight: bold;
       display: block;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
     }
-    .menu-item small {
-      font-size: 0.9rem;
-      color: #888;
+    .menu-item .item-desc {
+      font-size: 0.97rem;
+      color: #e88810;
+    }
+    .menu-item .item-price {
+      color: #ff4c29;
+      font-weight: bold;
+      font-size: 1.03rem;
+      margin-top: 2px;
+      display: block;
     }
     .menu-item button {
       background: #ff7043;
       border: none;
       color: white;
-      font-size: 1.2rem;
+      font-size: 1.22rem;
+      font-weight: bold;
       border-radius: 50%;
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
+      margin-left: 3px;
       cursor: pointer;
+      transition: background 0.15s, transform 0.12s;
+    }
+    .menu-item button:active {
+      background: #ffc371;
+      color: #7b3205;
     }
     #cartButton {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      bottom: 22px;
+      right: 18px;
       background: #ff5722;
       border: none;
       color: white;
-      padding: 0.8rem 1.2rem;
-      font-size: 1rem;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      padding: 1.07em 1.3em;
+      font-size: 1.19rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px 0 rgba(220,70,15,0.20);
       cursor: pointer;
       z-index: 999;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    #cartCount {
+      font-weight: bold;
     }
     #cartModal {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
+      left: 0; top: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.16);
+      z-index: 1001;
       display: none;
       justify-content: center;
-      align-items: flex-start;
-      padding-top: 2rem;
+      align-items: start;
+      padding-top: 2.2rem;
     }
     #cartContent {
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
       max-width: 500px;
-      width: 90%;
-      padding: 1rem;
+      width: 94vw;
+      padding: 1.3rem 0.7rem 1rem 0.7rem;
+      margin:auto;
+      box-shadow: 0 16px 44px rgba(255,140,40,0.16);
+      animation: fadeIn .36s;
+    }
+    .cart-header {
+      text-align: center;
+      font-size: 1.6rem;
+      margin-bottom: 0.9rem;
+      color: #fd8610;
+      font-weight: bold;
+    }
+    .close-btn {
+      text-align: right;
+      margin-bottom: 0.3rem;
+    }
+    .close-btn button {
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: #ff7043;
     }
     .cart-item {
       display: flex;
       justify-content: space-between;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #eee;
+      align-items: center;
+      gap: 6px;
+      padding: 0.58em 0;
+      border-bottom: 1px solid #ffe0b2;
+      font-size: 1.04em;
     }
-    .cart-item input {
-      width: 40px;
+    .cart-controls {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .cart-controls button {
+      background: #ffe6ba;
+      color: #e86900;
+      border: none;
+      border-radius: 8px;
+      width: 28px; height: 28px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .cart-controls .cart-qty {
+      margin: 0 2px;
+      min-width: 16px;
       text-align: center;
+      font-size: 1.08em;
     }
     textarea {
-      width: 100%;
-      padding: 0.5rem;
+      width: 97.5%;
+      padding: 0.54rem;
       margin-top: 1rem;
       border-radius: 6px;
-      border: 1px solid #ccc;
+      border: 1px solid #dfb36c;
       font-size: 1rem;
+      background: #fffbe9;
     }
     .checkout-btn {
       margin-top: 1rem;
       background: #fb8c00;
       color: white;
-      padding: 0.8rem;
+      padding: 0.98rem;
       width: 100%;
       border: none;
-      font-size: 1.1rem;
+      font-size: 1.11rem;
       border-radius: 10px;
       cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 3px 12px rgba(253,160,10,0.11);
     }
-    .close-btn {
-      text-align: right;
-      margin-bottom: 0.5rem;
+    .small-print {
+      text-align: center;
+      font-size: 0.94rem;
+      color: #ad7215;
+      margin-top: 0.9rem;
+      font-style: italic;
     }
-    .close-btn button {
-      background: transparent;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #555;
+    @media (max-width: 650px) {
+      .categories {flex-direction: column;}
+      .categories button { width: 97vw;}
+      .menu-section {max-width: 99vw;}
+      #cartContent {max-width: 99vw;}
     }
   </style>
 </head>
@@ -160,155 +257,247 @@
 
 <div class="categories">
   <button onclick="showSection('appetizers')">🥗 Appetizers</button>
-  <button onclick="showSection('sandwiches')">🥪 Sandwiches</button>
-  <button onclick="showSection('entrees')">🍢 Entrées</button>
-  <button onclick="showSection('drinks')">🥤 Drinks</button>
+  <button onclick="showSection('salads')">🥗 Salads</button>
+  <button onclick="showSection('entrees')">🍢 Sizzling Kebab Entrees</button>
+  <button onclick="showSection('sandwiches')">🥪 Sandwiches, Panini, Gyros & More</button>
+  <button onclick="showSection('burgers')">🍔 Burgers</button>
   <button onclick="showSection('sides')">🍟 Sides</button>
+  <button onclick="showSection('desserts')">🍰 Desserts</button>
+  <button onclick="showSection('drinks')">🥤 Beverages</button>
 </div>
 
-<!-- Sections -->
+<!-- Menu Sections -->
+<!-- 1. Appetizers & Middle Eastern -->
 <div id="appetizers" class="menu-section">
-  <div class="menu-item">
-    <div class="info"><strong>Hummus 🥣</strong><small>Chickpea dip with pita</small></div>
-    <button onclick="addToCart('Hummus 🥣')">+</button>
-  </div>
-  <div class="menu-item">
-    <div class="info"><strong>Falafel Balls 🧆</strong><small>6 pcs with tahini</small></div>
-    <button onclick="addToCart('Falafel Balls 🧆')">+</button>
-  </div>
-</div>
-
-<div id="sandwiches" class="menu-section">
-  <div class="menu-item">
-    <div class="info"><strong>Chicken Kebab Sandwich 🌯</strong><small>Grilled chicken & veggies</small></div>
-    <button onclick="addToCart('Chicken Kebab Sandwich 🌯')">+</button>
-  </div>
-  <div class="menu-item">
-    <div class="info"><strong>Gyro Sandwich 🥙</strong><small>Lamb/beef gyro wrap</small></div>
-    <button onclick="addToCart('Gyro Sandwich 🥙')">+</button>
+  <div class="section-title">🥗 Appetizers & Middle Eastern</div>
+  <div class="menu-list">
+    <div class="menu-item"><div class="info"><span class="item-title">Mixed Appetizer</span><span class="item-desc">Assorted sampler</span><span class="item-price">$14.49</span></div><button onclick="addToCart('Mixed Appetizer',14.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Sambosa</span><span class="item-desc">Seasoned savory pastry</span><span class="item-price">$9.99</span></div><button onclick="addToCart('Sambosa',9.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Hummus Delight</span><span class="item-desc">Hummus with special toppings</span><span class="item-price">$9.99</span></div><button onclick="addToCart('Hummus Delight',9.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Falafel (Small)</span><span class="item-desc">Classic chickpea patties</span><span class="item-price">$8.49</span></div><button onclick="addToCart('Falafel (Small)',8.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Falafel (Large)</span><span class="item-desc">Classic chickpea patties</span><span class="item-price">$10.49</span></div><button onclick="addToCart('Falafel (Large)',10.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Hummus (Small)</span><span class="item-desc">House creamy hummus</span><span class="item-price">$8.49</span></div><button onclick="addToCart('Hummus (Small)',8.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Hummus (Large)</span><span class="item-desc">House creamy hummus</span><span class="item-price">$10.49</span></div><button onclick="addToCart('Hummus (Large)',10.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Baba Ghanoush (Small)</span><span class="item-desc">Eggplant dip</span><span class="item-price">$8.49</span></div><button onclick="addToCart('Baba Ghanoush (Small)',8.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Baba Ghanoush (Large)</span><span class="item-desc">Eggplant dip</span><span class="item-price">$10.49</span></div><button onclick="addToCart('Baba Ghanoush (Large)',10.49)">+</button></div>
   </div>
 </div>
 
+<!-- 2. Salads -->
+<div id="salads" class="menu-section">
+  <div class="section-title">🥗 Salads</div>
+  <div class="menu-list">
+    <div class="menu-item"><div class="info"><span class="item-title">Afghan Salad</span><span class="item-desc">Fresh, classic</span><span class="item-price">$7.49</span></div><button onclick="addToCart('Afghan Salad',7.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Garden Salad</span><span class="item-desc">Seasonal vegetables</span><span class="item-price">$8.49</span></div><button onclick="addToCart('Garden Salad',8.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Caesar Salad</span><span class="item-desc">Caesar style</span><span class="item-price">$9.49</span></div><button onclick="addToCart('Caesar Salad',9.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Greek Salad</span><span class="item-desc">Mediterranean style</span><span class="item-price">$10.49</span></div><button onclick="addToCart('Greek Salad',10.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Grilled Chicken Salad</span><span class="item-desc">With grilled chicken</span><span class="item-price">$13.49</span></div><button onclick="addToCart('Grilled Chicken Salad',13.49)">+</button></div>
+  </div>
+</div>
+
+<!-- 3. Sizzling Kebab Entrees & Platters -->
 <div id="entrees" class="menu-section">
-  <div class="menu-item">
-    <div class="info"><strong>Mix Grill Platter 🍖</strong><small>Chicken, lamb, koobideh</small></div>
-    <button onclick="addToCart('Mix Grill Platter 🍖')">+</button>
-  </div>
-  <div class="menu-item">
-    <div class="info"><strong>Veggie Platter 🥦</strong><small>Falafel, hummus, tabouli, salad</small></div>
-    <button onclick="addToCart('Veggie Platter 🥦')">+</button>
+  <div class="section-title">🍢 Sizzling Kebab Entrees & Platters</div>
+  <div class="menu-list">
+    <div class="menu-item"><div class="info"><span class="item-title">Steak Kabab</span><span class="item-desc">Grilled steak skewers</span><span class="item-price">$24.99</span></div><button onclick="addToCart('Steak Kabab',24.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Chicken Tandoori</span><span class="item-desc">Spiced grilled chicken</span><span class="item-price">$17.99</span></div><button onclick="addToCart('Chicken Tandoori',17.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Kabab Combo</span><span class="item-desc">Chef's assortment</span><span class="item-price">$25.49</span></div><button onclick="addToCart('Kabab Combo',25.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Beef Tikka Kabab</span><span class="item-desc">Marinated beef cubes</span><span class="item-price">$20.99</span></div><button onclick="addToCart('Beef Tikka Kabab',20.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Beef Kufta Kabab</span><span class="item-desc">Grilled ground beef</span><span class="item-price">$18.99</span></div><button onclick="addToCart('Beef Kufta Kabab',18.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Lamb Tikka Kabab</span><span class="item-desc">Marinated lamb cubes</span><span class="item-price">$23.49</span></div><button onclick="addToCart('Lamb Tikka Kabab',23.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Lamb Chop Kabab</span><span class="item-desc">Grilled lamb chops</span><span class="item-price">$23.49</span></div><button onclick="addToCart('Lamb Chop Kabab',23.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Sultani Kabab</span><span class="item-desc">Beef & lamb kabab</span><span class="item-price">$23.49</span></div><button onclick="addToCart('Sultani Kabab',23.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Karahi</span><span class="item-desc">Stewed spices, meat, tomatoes</span><span class="item-price">$19.99</span></div><button onclick="addToCart('Karahi',19.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Qorma</span><span class="item-desc">Afghan stew</span><span class="item-price">$18.99</span></div><button onclick="addToCart('Qorma',18.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Fish Kabab (Salmon)</span><span class="item-desc">Salmon filet kabab</span><span class="item-price">$21.99</span></div><button onclick="addToCart('Fish Kabab (Salmon)',21.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Fish Kabab (Whiting)</span><span class="item-desc">Whiting filet kabab</span><span class="item-price">$19.99</span></div><button onclick="addToCart('Fish Kabab (Whiting)',19.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Grilled Vegetable Kabab</span><span class="item-desc">Veggie skewer</span><span class="item-price">$18.99</span></div><button onclick="addToCart('Grilled Vegetable Kabab',18.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Gyro Platter (Lamb/Chicken/Mixed/Falafel)</span><span class="item-desc">Served with rice and salad</span><span class="item-price">$13.49</span></div><button onclick="addToCart('Gyro Platter',13.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Fried Chicken (2pc - 18pc with/without fries)</span><span class="item-desc">See store for full options</span><span class="item-price">$8.49 - $37.99</span></div><button onclick="addToCart('Fried Chicken (Custom)',10)">+</button></div>
   </div>
 </div>
 
-<div id="drinks" class="menu-section">
-  <div class="menu-item">
-    <div class="info"><strong>Iced Mint Tea 🍃🧊</strong><small>Sweet iced tea</small></div>
-    <button onclick="addToCart('Iced Mint Tea 🍃🧊')">+</button>
-  </div>
-  <div class="menu-item">
-    <div class="info"><strong>Homemade Lemonade 🍋</strong><small>Fresh lemon</small></div>
-    <button onclick="addToCart('Homemade Lemonade 🍋')">+</button>
+<!-- 4. Sandwiches, Panini, Tacos, Gyros, Cheese Steaks, Quesadillas -->
+<div id="sandwiches" class="menu-section">
+  <div class="section-title">🥪 Sandwiches, Panini, Cheese Steaks, Quesadillas, Gyros & Tacos</div>
+  <div class="menu-list">
+    <div class="menu-item"><div class="info"><span class="item-title">Philly Cheese Steak</span><span class="item-desc">Classic Philly</span><span class="item-price">$11.99</span></div><button onclick="addToCart('Philly Cheese Steak',11.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Chicken Cheese Steak</span><span class="item-desc"></span><span class="item-price">$11.99</span></div><button onclick="addToCart('Chicken Cheese Steak',11.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Mixed Cheese Steak</span><span class="item-desc"></span><span class="item-price">$11.99</span></div><button onclick="addToCart('Mixed Cheese Steak',11.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Kebab Tacos (Steak/Chicken/Mix)</span><span class="item-desc"></span><span class="item-price">$10.99</span></div><button onclick="addToCart('Kebab Taco',10.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Quesadilla (Chicken/Beef/Cheeseburger/Neptune/Veggie/Cheese)</span><span class="item-desc"></span><span class="item-price">$11.25 - $14.49</span></div><button onclick="addToCart('Quesadilla',12)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Chicken Parmigiana Sandwich</span><span class="item-desc"></span><span class="item-price">$12.99</span></div><button onclick="addToCart('Chicken Parmigiana Sandwich',12.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Grilled Cheese</span><span class="item-desc"></span><span class="item-price">$8.49</span></div><button onclick="addToCart('Grilled Cheese',8.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Beef Kufta Kebab Sandwich</span><span class="item-desc"></span><span class="item-price">$9.99</span></div><button onclick="addToCart('Beef Kufta Kebab Sandwich',9.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Panini Sandwich (Chicken/Beef/Neptune/Gyro)</span><span class="item-desc">+ Make it combo $3.50</span><span class="item-price">$11.99</span></div><button onclick="addToCart('Panini Sandwich',11.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Gyro Sandwich (Lamb/Mixed/Falafel/Chicken)</span><span class="item-desc"></span><span class="item-price">$10.99</span></div><button onclick="addToCart('Gyro Sandwich',10.99)">+</button></div>
   </div>
 </div>
 
+<!-- 5. Burgers (Classic & Specialty) -->
+<div id="burgers" class="menu-section">
+  <div class="section-title">🍔 Burgers (Classic & Specialty)</div>
+  <div class="menu-list">
+    <div class="menu-item"><div class="info"><span class="item-title">Hamburger</span><span class="item-price">$5.99</span></div><button onclick="addToCart('Hamburger',5.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Paradise Burger</span><span class="item-price">$8.99</span></div><button onclick="addToCart('Paradise Burger',8.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Jupiter Burger</span><span class="item-price">$8.49</span></div><button onclick="addToCart('Jupiter Burger',8.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Mars Burger</span><span class="item-price">$8.99</span></div><button onclick="addToCart('Mars Burger',8.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Venus Burger</span><span class="item-price">$8.99</span></div><button onclick="addToCart('Venus Burger',8.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Neptune Burger</span><span class="item-price">$8.99</span></div><button onclick="addToCart('Neptune Burger',8.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Pluto Burger</span><span class="item-price">$8.99</span></div><button onclick="addToCart('Pluto Burger',8.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Saturn Burger</span><span class="item-price">$8.49</span></div><button onclick="addToCart('Saturn Burger',8.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Earth Burger</span><span class="item-price">$8.49</span></div><button onclick="addToCart('Earth Burger',8.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Sun Burger</span><span class="item-price">$8.99</span></div><button onclick="addToCart('Sun Burger',8.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Volcano Burger</span><span class="item-price">$8.99</span></div><button onclick="addToCart('Volcano Burger',8.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Comet Burger</span><span class="item-price">$7.49</span></div><button onclick="addToCart('Comet Burger',7.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Lava Burger</span><span class="item-price">$9.49</span></div><button onclick="addToCart('Lava Burger',9.49)">+</button></div>
+  </div>
+</div>
+
+<!-- 6. Sides & Fried Chicken -->
 <div id="sides" class="menu-section">
-  <div class="menu-item">
-    <div class="info"><strong>French Fries 🍟</strong><small>Crispy & golden</small></div>
-    <button onclick="addToCart('French Fries 🍟')">+</button>
-  </div>
-  <div class="menu-item">
-    <div class="info"><strong>Pita Bread 🫓</strong><small>Fresh baked bread</small></div>
-    <button onclick="addToCart('Pita Bread 🫓')">+</button>
+  <div class="section-title">🍟 Sides & Fried Chicken</div>
+  <div class="menu-list">
+    <div class="menu-item"><div class="info"><span class="item-title">French Fries (Small/Medium/Large/Spicy Curly/Loaded)</span><span class="item-desc">Classic or fun!</span><span class="item-price">$4.00 - $7.50</span></div><button onclick="addToCart('French Fries (Custom)',5)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Onion Rings</span><span class="item-desc">Golden & crispy</span><span class="item-price">$6.49</span></div><button onclick="addToCart('Onion Rings',6.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Soup of the Day</span><span class="item-desc">Fresh daily</span><span class="item-price">$4.99</span></div><button onclick="addToCart('Soup of the Day',4.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Sabzi</span><span class="item-desc">Spinach stew</span><span class="item-price">$8.99</span></div><button onclick="addToCart('Sabzi',8.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Qorma Lamb</span><span class="item-desc">Rich lamb stew</span><span class="item-price">$10.99</span></div><button onclick="addToCart('Qorma Lamb',10.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Qorma Chicken</span><span class="item-desc">Rich chicken stew</span><span class="item-price">$10.99</span></div><button onclick="addToCart('Qorma Chicken',10.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Qorma Kadoo</span><span class="item-desc">Afghan pumpkin stew</span><span class="item-price">$10.99</span></div><button onclick="addToCart('Qorma Kadoo',10.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Rice (Brown/White/Qabuli)</span><span class="item-desc">Choose your type</span><span class="item-price">$8.99 - $11.99</span></div><button onclick="addToCart('Rice (Custom)',10)">+</button></div>
   </div>
 </div>
 
-<!-- Cart -->
-<button id="cartButton" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+<!-- 7. Desserts -->
+<div id="desserts" class="menu-section">
+  <div class="section-title">🍰 Desserts</div>
+  <div class="menu-list">
+    <div class="menu-item"><div class="info"><span class="item-title">Baklava</span><span class="item-price">$2.50</span></div><button onclick="addToCart('Baklava',2.50)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Jelabi</span><span class="item-price">$2.99</span></div><button onclick="addToCart('Jelabi',2.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Ferni</span><span class="item-price">$3.25</span></div><button onclick="addToCart('Ferni',3.25)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Cream Rolls</span><span class="item-price">$4.25</span></div><button onclick="addToCart('Cream Rolls',4.25)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Assorted Cakes</span><span class="item-price">$4.25</span></div><button onclick="addToCart('Assorted Cakes',4.25)">+</button></div>
+  </div>
+</div>
+
+<!-- 8. Beverages -->
+<div id="drinks" class="menu-section">
+  <div class="section-title">🥤 Beverages</div>
+  <div class="menu-list">
+    <div class="menu-item"><div class="info"><span class="item-title">Soda Can</span><span class="item-price">$1.25</span></div><button onclick="addToCart('Soda Can',1.25)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Mango Lassi</span><span class="item-price">$5.99</span></div><button onclick="addToCart('Mango Lassi',5.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Tea</span><span class="item-price">$2.49</span></div><button onclick="addToCart('Tea',2.49)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Bottled Water</span><span class="item-price">$1.75</span></div><button onclick="addToCart('Bottled Water',1.75)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Vitamin Water</span><span class="item-price">$2.99</span></div><button onclick="addToCart('Vitamin Water',2.99)">+</button></div>
+    <div class="menu-item"><div class="info"><span class="item-title">Mint Lime Refresher</span><span class="item-price">$4.99</span></div><button onclick="addToCart('Mint Lime Refresher',4.99)">+</button></div>
+  </div>
+</div>
+
+<!-- Cart Button & Modal -->
+<button id="cartButton" onclick="openCart()">
+  🛒 Cart (<span id="cartCount">0</span>)
+</button>
 
 <div id="cartModal">
   <div id="cartContent">
     <div class="close-btn"><button onclick="closeCart()">×</button></div>
-    <h2>Your Cart</h2>
+    <div class="cart-header">Your Cart</div>
     <div id="cartItems"></div>
-    <textarea id="notes" rows="3" placeholder="Special notes for KP chef (e.g. No onions)"></textarea>
+    <textarea id="notes" rows="2" placeholder="Special notes for KP chef (e.g. No onions)"></textarea>
     <button class="checkout-btn" onclick="checkout()">Place Order via Text</button>
+    <div class="small-print">
+      ⓘ Reminder: Send $1 to Kaka via PayPal after your order: paypal.com/paypalme/my/profile
+    </div>
   </div>
 </div>
 
 <script>
-  const cart = {};
+  // Category show/hide logic
   function showSection(id) {
-    document.querySelectorAll('.menu-section').forEach(sec => sec.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
+    document.querySelectorAll('.menu-section').forEach(sec => sec.classList.remove('active'));
+    document.querySelectorAll('.categories button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    // highlight correct button
+    [...document.querySelectorAll('.categories button')].find(btn => btn.getAttribute('onclick')?.includes("'" + id + "'"))?.classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
   }
+  // Default section open
+  showSection('appetizers');
 
-  function addToCart(item) {
-    if (cart[item]) {
-      cart[item]++;
-    } else {
-      cart[item] = 1;
-    }
+  // Cart logic
+  const cart = {};
+  function addToCart(item, price) {
+    if (!cart[item]) cart[item] = {qty:0, price:price};
+    cart[item].qty += 1;
     updateCartCount();
   }
-
   function updateCartCount() {
     document.getElementById('cartCount').textContent =
-      Object.values(cart).reduce((a,b)=>a+b, 0);
+      Object.values(cart).reduce((a,v) => a+v.qty,0);
   }
-
   function openCart() {
     document.getElementById('cartModal').style.display = 'flex';
+    renderCartItems();
+  }
+  function closeCart() {
+    document.getElementById('cartModal').style.display = 'none';
+  }
+  function renderCartItems() {
     const cartItems = document.getElementById('cartItems');
-    cartItems.innerHTML = '';
-
+    cartItems.innerHTML = "";
+    let subt = 0;
     for (let item in cart) {
+      subt += cart[item].price * cart[item].qty;
       cartItems.innerHTML += `
         <div class="cart-item">
-          <span>${item}</span>
-          <span>
-            <button onclick="editQty('${item}', -1)">−</button>
-            ${cart[item]}
-            <button onclick="editQty('${item}', 1)">+</button>
+          <span>${item} <span style="font-size:0.97em;color:#fd9200;">$${cart[item].price.toFixed(2)}</span></span>
+          <span class="cart-controls">
+            <button onclick="changeQty('${item.replace(/'/g,"&#39;")}', -1)">−</button>
+            <span class="cart-qty">${cart[item].qty}</span>
+            <button onclick="changeQty('${item.replace(/'/g,"&#39;")}', 1)">+</button>
+            <button onclick="removeCart('${item.replace(/'/g,"&#39;")}')">×</button>
           </span>
         </div>
       `;
     }
+    if (Object.keys(cart).length)
+      cartItems.innerHTML += `<div style="text-align:right;font-size:1.02em;margin-top:0.7em;font-weight:bold;">Subtotal: $${subt.toFixed(2)}</div>`;
+    if (!Object.keys(cart).length)
+      cartItems.innerHTML = "<div style='text-align:center;color:#ff852b;'>Your cart is empty.</div>";
   }
-
-  function closeCart() {
-    document.getElementById('cartModal').style.display = 'none';
+  function changeQty(item, change) {
+    if (!cart[item]) return;
+    cart[item].qty += change;
+    if (cart[item].qty <= 0) delete cart[item];
+    renderCartItems();
+    updateCartCount();
   }
-
-  function editQty(item, change) {
-    cart[item] += change;
-    if (cart[item] <= 0) {
-      delete cart[item];
-    }
-    openCart();
+  function removeCart(item) {
+    delete cart[item];
+    renderCartItems();
     updateCartCount();
   }
 
+  // Checkout logic (to SMS)
   function checkout() {
-    if (Object.keys(cart).length === 0) {
-      alert("Please add some food first!");
+    if (!Object.keys(cart).length) {
+      alert("Your cart is empty!");
       return;
     }
-    const name = prompt("Who is placing this order?");
-    const notes = document.getElementById("notes").value;
-    let message = `Hello KP Chef! 🍽️%0A%0ANew order from ${name || "Guest"}:%0A%0A`;
-
-    for (const item in cart) {
-      message += `• ${item} x${cart[item]}%0A`;
+    let who = prompt("Who is placing this order?") || 'Guest';
+    const notes = (document.getElementById("notes").value || '').trim();
+    let msg = `Hello KP Chef! 🍽️%0A%0AOrder from: ${who}%0A%0A`;
+    let total = 0;
+    for (let item in cart) {
+      msg += `• ${item} ($${cart[item].price.toFixed(2)}) x${cart[item].qty}%0A`;
+      total += cart[item].price * cart[item].qty;
     }
-
-    if (notes.trim()) {
-      message += `%0A*Special notes:* ${notes.trim()}%0A`;
-    }
-
-    message += `%0AThank you! 🧆`;
-    window.location = `sms:+19739360197?body=${message}`;
+    msg += `%0A*Subtotal:* $${total.toFixed(2)}%0A`;
+    if (notes) msg += `%0ASpecial notes: ${encodeURIComponent(notes)}%0A`;
+    msg += `%0AThank you! 🥙%0A%0ASmall print: Please send $1 to Kaka after your order via PayPal — https://www.paypal.com/paypalme/my/profile`;
+    window.location = `sms:+19739360197?body=${msg}`;
   }
 </script>
-
 </body>
 </html>
