@@ -1,1 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kabab Paradise Food Ordering</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: linear-gradient(135deg,#ffe259,#ffa751 37%,#FF7E5F 84%);
+      font-family: 'Segoe UI',sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: #333;
+      overflow-x: hidden;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+    .btn-section {
+      display: flex;
+      justify-content: space-around;
+      margin: 30px 10px 20px 10px;
+      flex-wrap: wrap;
+      gap:24px;
+    }
+    .category-btn {
+      font-size: 1.5rem;
+      min-width: 160px;
+      padding: 30px 20px;
+      border-radius: 18px;
+      border: 2px solid #fff;
+      box-shadow: 0 5px 20px 0 rgba(255,80,80,0.1);
+      background: linear-gradient(120deg,#fff6ec,#ffecec 70%);
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.23s, transform 0.15s;
+      color: #ff5722;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      outline: none;
+      position: relative;
+      z-index: 4;
+      animation: popIn .6s cubic-bezier(.68,-0.6,.32,1.6);  
+    }
+    .category-btn:hover,.category-btn.active {
+      background: linear-gradient(120deg,#ffecd2,#fcb69f 70%);
+      transform: translateY(-4px) scale(1.06);
+      color: #b84300;
+    }
+    @keyframes popIn {
+      from {opacity:0; transform: scale(0.85);}
+      to   {opacity:1; transform: scale(1);}
+    }
+    .menu-section {
+      margin:auto;
+      max-width: 420px;
+      background: rgba(255,255,255,0.72);
+      border-radius: 20px;
+      box-shadow:0 10px 30px 0 rgba(255,100,10,0.08);
+      padding: 20px 0 0 0;
+      margin-bottom: 3rem;
+      display: none;
+      animation: fadeIn 0.5s;
+      position: relative;
+      z-index: 3;
+    }
+    .menu-section.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(24px);}
+      to   { opacity: 1; transform: translateY(0);}
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 22px 18px 22px;
+      padding: 13px 0;
+      border-bottom: 1px solid #ffe8d2;
+      font-size: 1.16rem;
+      animation: fadeIn .45s;
+      gap: 9px;
+    }
+    .item-left { 
+      display: flex; flex-direction: column; 
+    }
+    .item-title { font-weight: 650;}
+    .item-desc { font-size: 0.98rem; color: #FF8347;}
+    .add-btn {
+      background: linear-gradient(90deg,#ff7e5f,#feb47b 80%);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.52rem;
+      width: 42px; height: 42px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px 0 rgba(255,125,70,0.17);
+      transition: background 0.2s, transform 0.17s;
+    }
+    .add-btn:active {background: #ffab76; transform: scale(0.93);}
+    .cart-btn {
+      position: fixed; right: 32px; bottom: 32px;
+      background: #ff6523;
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.43rem;
+      padding: 20px 34px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 24px 0 rgba(255,50,10,0.29);
+      transition: background 0.19s, transform 0.13s; z-index:9;
+      display:flex; gap:12px; align-items:center;
+      animation: popIn .5s cubic-bezier(.68,-0.6,.32,1.6);
+    }
+    .cart-btn:active{background:#e94c0a;}
+    #cart-modal {
+      position: fixed; right:0; bottom:0; left:0; top:0;
+      background:rgba(255,120,77,0.13);
+      display:none; z-index:99;
+    }
+    #cart-content {
+      width: 98vw; max-width:460px;
+      background:#fffbe9;
+      border-radius:22px 22px 0 0;
+      box-shadow:0 16px 36px 0 rgba(242,110,30,0.11);
+      margin: 54px auto 0 auto;
+      position:relative;
+      padding: 33px 17px 25px 17px;
+      min-height: 320px;
+      animation: popIn .44s;
+      max-height: 78vh;
+      overflow-y: auto;
+    }
+    .cart-header {
+      text-align:center; font-size:1.8rem; font-weight:900; color:#ff8831;
+    }
+    .cart-items {
+      margin-top:2.3rem;
+      margin-bottom:1.6rem;
+    }
+    .cart-item {
+      display:flex; align-items:center;
+      justify-content:space-between;
+      margin-bottom:14px;
+      font-size:1.09rem;
+      animation: fadeIn .32s;
+    }
+    .cart-food-title{font-weight:650;}
+    .cart-qty {
+      display:flex;align-items:center;gap:7px;
+    }
+    .qty-btn {
+      font-size:1.3rem;
+      background: #ffe1c3;
+      color: #ff9933;
+      border:none;
+      border-radius: 7px;
+      width:28px;height:28px;
+      cursor:pointer;
+      font-weight:900;
+      transition: background 0.16s;
+    }
+    .qty-btn:active {background:#ffb162;}
+    .remove-btn{color:#c64c1a;font-size:1.5em;cursor:pointer;background:none;border:none;}
+    .add-notes {
+      width:94%;resize:none;border-radius:8px;padding:8px;
+      font-size:1.1rem;margin-top:7px;
+      border: 1px solid #fdbe9f;
+      min-height: 38px;
+    }
+    .cart-icons {
+      font-size:1.19rem;color:#FEB47B;margin-bottom:3px;
+    }
+    .close-cart { 
+      font-size: 2.2rem; 
+      position:absolute; right:18px; top:18px;
+      background: none; border: none; color: #f96c06; cursor: pointer; z-index:101;
+      font-weight: bold; 
+    }
+    .checkout-btn {
+      display:block;
+      margin: 18px auto 0 auto;
+      background:linear-gradient(100deg,#ff7e5f,#feb47b 86%);
+      color:#fff; font-size:1.18rem;font-weight:900;
+      padding: 18px 34px;
+      border:none;border-radius:16px;
+      cursor:pointer;
+      box-shadow:0 2px 11px 0 rgba(249,148,71,0.15);
+      transition: background 0.17s;
+    }
+    .checkout-btn:active{background:#ff8831;}
+    .order-by{
+      font-size:1.02em; color:#9a8d7a; margin-top:20px; text-align:center;
+    }
+    @media(max-width:600px){
+      .btn-section {flex-direction:column;align-items:center;}
+      .category-btn{width:110vw;min-width:none;}
+      .menu-section{max-width:99vw;}
+      #cart-content{max-width:97vw;}
+    }
+  </style>
+</head>
+<body>
+  <h1>
+    🥙 Kabab Paradise Menu 🥙
+  </h1>
+
+  <div class="btn-section">
+    <button class="category-btn" onclick="showMenu('appetizers')" id="btn-appetizers">🥗 Appetizers</button>
+    <button class="category-btn" onclick="showMenu('sandwiches')" id="btn-sandwiches">🥪 Sandwiches</button>
+    <button class="category-btn" onclick="showMenu('entrees')" id="btn-entrees">🍢 Entrées</button>
+    <button class="category-btn" onclick="showMenu('drinks')" id="btn-drinks">🥤 Drinks</button>
+    <button class="category-btn" onclick="showMenu('sides')" id="btn-sides">🍟 Sides</button>
+  </div>
+  
+  <!-- Appetizers Section -->
+  <div class="menu-section" id="menu-appetizers">
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Hummus 🥣</span>
+        <span class="item-desc">Creamy chickpea dip & pita</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Hummus 🥣','Appetizer')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Falafel Balls 🧆</span>
+        <span class="item-desc">6pcs, served with tahini sauce</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Falafel Balls 🧆','Appetizer')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Grilled Wings 🍗</span>
+        <span class="item-desc">Marinated, grilled & smoky</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Grilled Wings 🍗','Appetizer')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Lentil Soup 🥄</span>
+        <span class="item-desc">Comforting lentil & spice broth</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Lentil Soup 🥄','Appetizer')">+</button>
+    </div>
+  </div>
+  
+  <!-- Sandwiches Section -->
+  <div class="menu-section" id="menu-sandwiches">
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Chicken Kebab Sandwich 🌯</span>
+        <span class="item-desc">Marinated chicken, pita, fresh veggies & sauce</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Chicken Kebab Sandwich 🌯','Sandwich')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Gyro Sandwich 🥙</span>
+        <span class="item-desc">Classic lamb or beef, herbs & creamy sauce</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Gyro Sandwich 🥙','Sandwich')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Falafel Sandwich 🧆</span>
+        <span class="item-desc">Crunchy falafel balls, veggies & tahini</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Falafel Sandwich 🧆','Sandwich')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Koobideh Sandwich 🥩</span>
+        <span class="item-desc">Seasoned ground beef/lamb skewer, pita, & greens</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Koobideh Sandwich 🥩','Sandwich')">+</button>
+    </div>
+  </div>
+  
+  <!-- Entrees Section -->
+  <div class="menu-section" id="menu-entrees">
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Mix Grill Platter 🍖</span>
+        <span class="item-desc">Chicken, lamb, koobideh & veggies, with rice</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Mix Grill Platter 🍖','Entree')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Chicken Kebab Platter 🍗</span>
+        <span class="item-desc">Juicy grilled chicken, rice & salad</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Chicken Kebab Platter 🍗','Entree')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Lamb Shank Platter 🍖</span>
+        <span class="item-desc">Tender lamb shank, rice & special sauce</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Lamb Shank Platter 🍖','Entree')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Veggie Platter 🥦</span>
+        <span class="item-desc">Falafel, hummus, tabouli, rice & salad</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Veggie Platter 🥦','Entree')">+</button>
+    </div>
+  </div>
+  
+  <!-- Drinks Section -->
+  <div class="menu-section" id="menu-drinks">
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Iced Mint Tea 🧊🍃</span>
+        <span class="item-desc">Refreshing sweet mint tea over ice</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Iced Mint Tea 🧊🍃','Drink')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Homemade Lemonade 🍋</span>
+        <span class="item-desc">Zesty fresh-squeezed lemonade</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Homemade Lemonade 🍋','Drink')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Soda 🥤</span>
+        <span class="item-desc">Various classic options available</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Soda 🥤','Drink')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Bottled Water 💧</span>
+        <span class="item-desc">Chilled bottled spring water</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Bottled Water 💧','Drink')">+</button>
+    </div>
+  </div>
+  
+  <!-- Sides Section -->
+  <div class="menu-section" id="menu-sides">
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">French Fries 🍟</span>
+        <span class="item-desc">Golden, crispy & salted fries</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('French Fries 🍟','Side')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Rice Pilaf 🍚</span>
+        <span class="item-desc">Savory rice pilaf with herbs</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Rice Pilaf 🍚','Side')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Tabouli Salad 🥗</span>
+        <span class="item-desc">Parsley, bulgur, tomatoes, lemon & olive oil</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Tabouli Salad 🥗','Side')">+</button>
+    </div>
+    <div class="menu-item">
+      <div class="item-left">
+        <span class="item-title">Pita Bread 🫓</span>
+        <span class="item-desc">Warm baked pita bread rounds</span>
+      </div>
+      <button class="add-btn" onclick="addToCart('Pita Bread 🫓','Side')">+</button>
+    </div>
+  </div>
+  
+  <button class="cart-btn" onclick="openCart()">
+    <span>🛒 Open Cart</span>
+    <span id="cart-count">(0)</span>
+  </button>
+  
+  <!-- Cart Modal -->
+  <div id="cart-modal" onclick="closeCart(event)">
+    <div id="cart-content" onclick="event.stopPropagation()">
+      <button class="close-cart" onclick="closeCart(event)">&times;</button>
+      <div class="cart-header">Your 🥙 Order</div>
+      <div class="cart-items" id="cart-items"></div>
+      <div>
+        <label for="specialNotes" class="cart-icons">Chef Notes: ✍️</label>
+        <textarea id="specialNotes" class="add-notes" placeholder="Any special requests for KP chef?"></textarea>
+      </div>
+      <button class="checkout-btn" onclick="checkoutOrder()">Send Order via Text</button>
+      <div class="order-by">Order will be sent to <b>Farhadee</b> at <b>+1 (973) 936-0197</b> via your text app.</div>
+    </div>
+  </div>
+  
+  <script>
+    // MENU & CART LOGIC
+    const cart = {};
+    let userName = '';
+    function showMenu(menu) {
+      ['appetizers','sandwiches','entrees','drinks','sides'].forEach(cat=>{
+        document.getElementById('menu-'+cat).classList.remove('active');
+        document.getElementById('btn-'+cat).classList.remove('active');
+      });
+      document.getElementById('menu-'+menu).classList.add('active');
+      document.getElementById('btn-'+menu).classList.add('active');
+      window.scrollTo({top: 120,behavior:'smooth'});
+    }
+    function addToCart(item,cat) {
+      if (!cart[item]) cart[item]={name:item,category:cat,qty:1};
+      else cart[item].qty++;
+      renderCartCount();
+      quickPop(item);
+    }
+    function quickPop(item) {
+      document.body.insertAdjacentHTML('beforeend',`<div id=\"pop${item.replaceAll(' ','')}\" style=\"position:fixed;left:50%;top:56%;transform:translate(-50%,-60%);background:rgba(255,255,220,0.99);padding:19px 44px 19px 22px;border-radius:16px;font-size:1.2rem;color:#ff5700;z-index:1104;font-weight:700;box-shadow:0 4px 24px 0 rgba(245,125,20,0.23);animation:popfade 0.98s cubic-bezier(.61,-0.6,.32,1.7); \">Added ${item}!</div>`);
+      setTimeout(e=>{const el=document.getElementById('pop'+item.replaceAll(' ',''));
+        if(el)el.remove();
+      },900);
+    }
+    function renderCartCount() {
+      let n = Object.values(cart).reduce((a,v)=>a+v.qty,0);
+      document.getElementById('cart-count').textContent = '('+n+')';
+    }
+    function openCart() {
+      renderCart();
+      document.getElementById('cart-modal').style.display='block';
+    }
+    function closeCart(e){
+      if(e) e.stopPropagation();
+      document.getElementById('cart-modal').style.display='none';
+    }
+    function changeQty(item,delta) {
+      if (!cart[item]) return;
+      cart[item].qty += delta;
+      if (cart[item].qty<1) delete cart[item];
+      renderCart();
+      renderCartCount();
+    }
+    function removeItem(item){
+      delete cart[item];
+      renderCart();
+      renderCartCount();
+    }
+    function renderCart() {
+      const cartItemsDiv=document.getElementById('cart-items');
+      if (!cartItemsDiv) return;
+      cartItemsDiv.innerHTML= (Object.keys(cart).length==0)
+        ? '<div style=\"color:#FA8F6B;text-align:center;font-size:1.14em;margin:36px 0;\">No items added yet!</div>'
+        : Object.values(cart).map(item=>`<div class=\"cart-item\">
+           <span class=\"cart-food-title\">${item.name}</span>
+           <span class=\"cart-qty\">
+             <button class=\"qty-btn\" onclick=\"changeQty('${item.name.replace(/'/g,\"&#39;\")}',-1)\">-</button>
+             <span>${item.qty}</span>
+             <button class=\"qty-btn\" onclick=\"changeQty('${item.name.replace(/'/g,\"&#39;\")}',1)\">+</button>
+             <button class=\"remove-btn\" onclick=\"removeItem('${item.name.replace(/'/g,\"&#39;\")}')\">&times;</button>
+           </span>
+          </div>`).join('');
+      document.getElementById('specialNotes').value = window._specialNotes || '';
+    }
+    // Special notes
+    document.getElementById('specialNotes').addEventListener('input',function(e){
+      window._specialNotes = this.value;
+    });
+    // Checkout logic
+    function checkoutOrder() {
+      if(Object.keys(cart).length==0){
+        alert('🛒 Please add some food first!');
+        return;
+      }
+      let uname = userName.trim();
+      if(!uname){
+        uname = prompt('Who is placing this order? (Your name)','');
+        if(!uname) uname = "Hungry Guest";
+        userName = uname;
+      }
+      const notes = (window._specialNotes||'').trim();
+      let msg = `Hello KP Chef! 🍽️\\n\\nA new order from: ${uname}.\\n\\n`;
+      msg += Object.values(cart).map(item=>`- ${item.name} x${item.qty}`).join('\\n');
+      if(notes) msg+=`\\n\\nSpecial Notes: ${notes}`;
+      msg+=`\\n\\nThank you! 🧡`;
+      window.location = `sms:+19739360197?body=${encodeURIComponent(msg)}`;
+    }
+    // On entry, show appetizers
+    showMenu('appetizers');
+  </script>
+</body>
+</html>
 
